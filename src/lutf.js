@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  var CDN = "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@v1.0.0/assets/video/";
+  var CDN = "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@780d0ae60678e0fc061c774a9182ee2987dcc4c5/assets/video/";
 
   /* ------------------------------------------------------------------
      CONFIG — edit here. Anything set in window.LUTF_CONFIG before this
@@ -233,6 +233,18 @@
     hero.appendChild(toggle);
     main.insertBefore(hero, main.firstChild);
     setToggle();
+
+    // if the video can't load (bad URL, CDN down) fall back to the normal page
+    video.addEventListener("error", function () {
+      if (!hero) return;
+      hero.remove();
+      hero = null;
+      if (sourceSection) sourceSection.classList.remove("lutf-hero-source");
+      body.classList.remove("lutf-has-hero", "lutf-on-hero");
+      try {
+        measure();
+      } catch (e) {}
+    });
 
     if (!reduceMotion) {
       var p = video.play();

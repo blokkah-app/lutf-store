@@ -7,7 +7,7 @@ A custom CSS + JS skin for the LUTF store on Zid (**growth-theme**, Growth plan)
 | `src/lutf.css` | Zid dashboard › Store design › **Custom CSS**. Replace everything in it, including the old "Modern Luxury Navbar" snippet. |
 | `src/lutf.js` | Zid dashboard › Store design › **Custom JS** |
 
-The hero video is served from this repo through jsDelivr, pinned to the tag `v1.0.0`.
+The hero video is served from this repo through jsDelivr, pinned to a commit hash. **This only works while the repo is public.** While it is private, either make it public or upload the video in Zid's own Video section (see below). If the video can't load, the hero removes itself and the page falls back to the normal layout.
 
 ---
 
@@ -103,8 +103,7 @@ Then open `http://localhost:8080/` and `http://localhost:8080/product.html`. The
 
 ## Releasing a change to the video
 
-jsDelivr caches `@main`, so asset URLs are pinned to a tag. If you change the files in `assets/video/`:
+jsDelivr caches `@main`, so asset URLs are pinned to a commit hash. If you change the files in `assets/video/`:
 
-1. Commit.
-2. Create a new tag, e.g. `git tag v1.0.1 && git push --tags`.
-3. Update the `CDN` constant in `src/lutf.js`.
+1. Commit the new files.
+2. Put that commit's hash in the `CDN` constant in `src/lutf.js`.
