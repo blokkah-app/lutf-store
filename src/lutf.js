@@ -1,7 +1,7 @@
 /* ==========================================================================
    LUTF × Zid (growth-theme) — behaviour layer
-   Paste the whole file into: Zid dashboard › Store design › Custom JS
-   No dependencies. Safe to run in <head> or at the end of <body>.
+   SOURCE file. Paste dist/lutf.min.js into Zid (Custom JS), not this one.
+   Build: scripts/build.sh. No dependencies; safe in <head> or <body>.
    ========================================================================== */
 (function () {
   "use strict";
@@ -30,6 +30,18 @@
       quoteLinkText: "عرض كل التقييمات",
       reviewsWord: "تقييم",
       reveal: true,
+
+      // Client stories ("you + lutf"). Fed by a native Zid *Gallery* section
+      // whose title matches storiesMatch (e.g. "قصص عملائنا"): each gallery
+      // image becomes a story card, "image title" becomes the tag (@name),
+      // "primary button URL" becomes the link — or a video if it ends in .mp4.
+      // Product pages reuse the same stories (cached from the home page).
+      storiesMatch: "قصص|stories|you \\+|lutf \\+",
+      storiesTitle: "", // empty = keep the gallery title
+      storiesCtaText: "تابعنا على السوشيال",
+      storiesCtaUrl: "", // empty = first Instagram/TikTok link found in the footer
+      storiesOnProduct: true,
+      stories: [], // optional manual list: [{ image, video, tag, url }]
     },
     window.LUTF_CONFIG || {}
   );
@@ -112,7 +124,8 @@
 
     if (hero) {
       var hb = hero.getBoundingClientRect().bottom;
-      body.classList.toggle("lutf-on-hero", hb > headH + 24);
+      // switch to glass before the bar reaches the hero title/CTA area
+      body.classList.toggle("lutf-on-hero", hb > headH + 240);
     }
     if (Math.abs(dy) > 0) lastY = y;
   }
@@ -173,6 +186,17 @@
         src = u;
         poster = v.getAttribute("poster") || "";
         sourceSection = s;
+        // stop the hidden original from downloading/playing a second copy
+        try {
+          v.pause();
+          v.removeAttribute("autoplay");
+          v.preload = "none";
+          $$("source", v).forEach(function (n) {
+            v.removeChild(n);
+          });
+          v.removeAttribute("src");
+          v.load();
+        } catch (e) {}
         return true;
       }
       return false;
@@ -377,7 +401,7 @@
         continue;
       }
       if (/\[\/notes\]/i.test(line)) break;
-      var parts = line.split(/\s*[|｜:]\s*/);
+      var parts = line.split(/\s*[|\uFF5C:]\s*/);
       if (parts.length >= 2 && parts[0]) {
         notes.push({ label: parts.shift(), text: parts.join(" · ") });
       }
@@ -434,6 +458,175 @@
     nav.appendChild(prev);
     nav.appendChild(next);
     return nav;
+  }
+
+  function railProgress(rail) {
+    var bar = el("div", "lutf-rail-progress", "<span></span>");
+    var fill = bar.firstChild;
+    var sync = function () {
+      var max = rail.scrollWidth - rail.clientWidth;
+      var ratio = max > 0 ? Math.abs(rail.scrollLeft) / max : 1;
+      var vis = rail.scrollWidth ? rail.clientWidth / rail.scrollWidth : 1;
+      fill.style.width = Math.min(100, (vis + (1 - vis) * ratio) * 100) + "%";
+    };
+    rail.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    setTimeout(sync, 60);
+    return bar;
+  }
+
+  /* ---------- Client stories ---------------------------------------- */
+  var STORIES_KEY = "lutf:stories:v1";
+  var MP4 = /\.mp4(\?|#|$)/i;
+
+  function storiesFromGallery(root) {
+    var re = new RegExp(CFG.storiesMatch, "i");
+    var found = null;
+    $$("section.section-gallery", root).some(function (sec) {
+      var h = $("h2", sec);
+      var title = h ? h.textContent.trim() : "";
+      if (!re.test(title)) return false;
+      var items = [];
+      $$(".media-wrap", sec).forEach(function (mw) {
+        var card = mw.parentElement;
+        var img = $("img", mw);
+        var tag = $("h3", card);
+        var link = $("a[href]", card);
+        var href = link ? link.getAttribute("href") : "";
+        var isVid = !!href && MP4.test(href);
+        var it = {
+          image: img ? img.getAttribute("src") || "" : "",
+          tag: tag ? tag.textContent.trim() : "",
+          url: href && !isVid ? href : "",
+          video: isVid ? href : "",
+        };
+        if (it.image || it.video) items.push(it);
+      });
+      if (items.length) found = { title: title, items: items, section: sec };
+      return true;
+    });
+    return found;
+  }
+
+  function socialUrl() {
+    if (CFG.storiesCtaUrl) return CFG.storiesCtaUrl;
+    var a = $('#footer a[href*="instagram.com"], #footer a[href*="tiktok.com"], a[href*="instagram.com"]');
+    return a ? a.href : "";
+  }
+
+  function buildStories(data) {
+    var sec = el("section", "lutf-stories");
+    var panel = el("div", "lutf-stories__panel");
+    panel.appendChild(el("h2", "lutf-stories__title", esc(CFG.storiesTitle || data.title || "you + lutf")));
+    var rail = el("div", "lutf-rail");
+    rail.setAttribute("role", "list");
+    var PLAY = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1.2v7.6L8.6 5z" fill="currentColor"/></svg>';
+    data.items.forEach(function (it) {
+      var card = el(it.url ? "a" : "div", "lutf-story");
+      card.setAttribute("role", "listitem");
+      if (it.url) {
+        card.href = it.url;
+        if (/^https?:/i.test(it.url) && it.url.indexOf(location.host) < 0) {
+          card.target = "_blank";
+          card.rel = "noopener";
+        }
+      }
+      var h = "";
+      if (it.video) {
+        h +=
+          '<video muted loop playsinline preload="none" data-lutf-story-video' +
+          (it.image ? ' poster="' + esc(it.image) + '"' : "") +
+          ' src="' + esc(it.video) + '"></video><span class="lutf-story__play">' + PLAY + "</span>";
+      } else {
+        h += '<img src="' + esc(it.image) + '" alt="' + esc(it.tag || "") + '" loading="lazy">';
+      }
+      if (it.tag) h += '<span class="lutf-story__tag" dir="auto">' + esc(it.tag) + "</span>";
+      card.innerHTML = h;
+      rail.appendChild(card);
+    });
+    panel.appendChild(rail);
+    if (data.items.length > 1) {
+      var foot = el("div", "lutf-rail-foot");
+      foot.appendChild(railProgress(rail));
+      foot.appendChild(railNav(rail));
+      panel.appendChild(foot);
+    }
+    var url = socialUrl();
+    if (url && CFG.storiesCtaText) {
+      var cta = el("div", "lutf-stories__cta");
+      cta.innerHTML = '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(CFG.storiesCtaText) + "</a>";
+      panel.appendChild(cta);
+    }
+    sec.appendChild(panel);
+
+    // story videos play only while visible
+    var vids = $$("video[data-lutf-story-video]", sec);
+    if (vids.length && "IntersectionObserver" in window && !reduceMotion) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) {
+              var pr = en.target.play();
+              if (pr && pr.catch) pr.catch(function () {});
+            } else en.target.pause();
+          });
+        },
+        { threshold: 0.4 }
+      );
+      vids.forEach(function (v) {
+        io.observe(v);
+      });
+    }
+    return sec;
+  }
+
+  function saveStories(data) {
+    try {
+      localStorage.setItem(STORIES_KEY, JSON.stringify({ t: Date.now(), title: data.title, items: data.items }));
+    } catch (e) {}
+  }
+
+  function loadStories(cb) {
+    if (CFG.stories && CFG.stories.length) return cb({ title: CFG.storiesTitle, items: CFG.stories });
+    try {
+      var c = JSON.parse(localStorage.getItem(STORIES_KEY) || "null");
+      if (c && c.items && Date.now() - c.t < 12 * 3600 * 1000) return cb(c);
+    } catch (e) {}
+    // not cached yet: read the home page once, in the background
+    if (!window.fetch || !window.DOMParser) return;
+    fetch("/", { credentials: "same-origin" })
+      .then(function (r) {
+        return r.ok ? r.text() : "";
+      })
+      .then(function (html) {
+        if (!html) return;
+        var d = new DOMParser().parseFromString(html, "text/html");
+        var data = storiesFromGallery(d);
+        if (data) {
+          saveStories(data);
+          cb(data);
+        }
+      })
+      .catch(function () {});
+  }
+
+  function initStoriesHome() {
+    if (body.getAttribute("data-template") !== "home") return;
+    var data = storiesFromGallery(doc);
+    if (!data) {
+      try {
+        localStorage.setItem(STORIES_KEY, JSON.stringify({ t: Date.now(), items: [] }));
+      } catch (e) {}
+      if (CFG.stories && CFG.stories.length) {
+        var main = $("main");
+        if (main) main.appendChild(buildStories({ title: CFG.storiesTitle, items: CFG.stories }));
+      }
+      return;
+    }
+    saveStories(data);
+    var sec = buildStories(data);
+    data.section.parentNode.insertBefore(sec, data.section);
+    data.section.classList.add("lutf-stories-source");
   }
 
   function buildNotes(data) {
@@ -501,7 +694,17 @@
       anchor = n;
     }
     var q = buildQuote(rv);
-    if (q) anchor.parentNode.insertBefore(q, anchor.nextSibling);
+    if (q) {
+      anchor.parentNode.insertBefore(q, anchor.nextSibling);
+      anchor = q;
+    }
+    if (CFG.storiesOnProduct) {
+      var after = anchor;
+      loadStories(function (data) {
+        if (!data.items || !data.items.length || $(".lutf-stories")) return;
+        after.parentNode.insertBefore(buildStories(data), after.nextSibling);
+      });
+    }
   }
 
   /* ==================================================================
@@ -534,7 +737,14 @@
     body = doc.body;
     if (!body || body.classList.contains("lutf-js")) return;
     body.classList.add("lutf-js");
-    var steps = [initHero, initHeader, initCarousels, initProduct, initReveal];
+    // brand display font (kept out of the CSS: Zid may drop @import)
+    if (!$('link[href*="family=Alexandria"]')) {
+      var f = el("link");
+      f.rel = "stylesheet";
+      f.href = "https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&display=swap";
+      doc.head.appendChild(f);
+    }
+    var steps = [initHero, initHeader, initCarousels, initStoriesHome, initProduct, initReveal];
     steps.forEach(function (fn) {
       try {
         fn();
