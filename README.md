@@ -14,15 +14,13 @@ The `dist` files are minified, comment-free and ASCII-only (Arabic text is `\u`-
 **Check that the paste worked:**
 - Open the store, view the page source, and open the `custom-scripts.js` and `styles.css` links under `static.zid.store/static/…`.
 - They should be about **16 KB** (JS) and **20 KB** (CSS).
-- Earlier saves were cut off at 92 bytes and 274 bytes, which is why nothing was showing.
 
 Open the raw file on GitHub to copy it (**Raw** button → select all). Copying from the rendered page can drop text.
 
 ### Hero video
-The default video URL is served by jsDelivr from this repo, and **jsDelivr only serves public repos**. While the repo is private the request returns 404. Pick one option:
+The repo is public, so the default video URLs (jsDelivr, pinned to a commit hash) work as they are, including the separate mobile cut. Nothing else is needed.
 
-- **A (recommended): Zid hosts it.** Add a **Video** section at the top of the home page, upload `assets/video/lutf-hero.mp4`, and turn Autoplay on. The script uses that video for the hero, hides the original section and stops it downloading twice.
-- **B: make this repo public.** The default URLs then work immediately, including the separate mobile cut. The code is already public on the storefront anyway.
+Optional: to host the video on Zid instead, add a **Video** section at the top of the home page, upload a video and turn Autoplay on. The script then uses that video for the hero and hides the original section.
 
 If the video can't load, the hero removes itself and the page falls back to the normal layout.
 
