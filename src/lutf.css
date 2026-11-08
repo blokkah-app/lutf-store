@@ -765,18 +765,15 @@ html #sticky-cta.translate-y-full {
   display: none;
 }
 .lutf-note {
+  /* one shared card artwork: soft set + framed box (text sits in the frame) */
   position: relative;
   flex: 0 0 82%;
   max-width: 380px;
-  aspect-ratio: 4 / 4.6;
+  aspect-ratio: 1145 / 1374;
   scroll-snap-align: start;
   border-radius: var(--lutf-r-lg);
   overflow: hidden;
-  background: var(--lutf-greige);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 22px;
+  background: var(--lutf-cream) center / cover no-repeat;
   isolation: isolate;
 }
 @media (min-width: 768px) {
@@ -784,62 +781,65 @@ html #sticky-cta.translate-y-full {
     flex-basis: calc((100% - 24px) / 3);
   }
 }
-.lutf-note img {
+/* optional per-note ingredient photo, floating in the empty upper area */
+.lutf-note__img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 16%;
+  left: 50%;
+  width: 44%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 999px;
   object-fit: cover;
-  z-index: -2;
+  box-shadow: 0 16px 34px -18px rgba(46, 38, 35, 0.4);
+  border: 4px solid rgba(250, 247, 244, 0.85);
 }
-/* image-less cards get a soft botanical gradient and a shorter frame */
-.lutf-note--plain {
-  aspect-ratio: 4 / 3.4;
-}
-.lutf-note--plain::before {
-  content: "";
+/* the framed box in the artwork: 4.6% from the sides, 73%..95.8% vertically */
+.lutf-note__frame {
   position: absolute;
-  inset: 0;
-  z-index: -2;
-  background: radial-gradient(120% 80% at 80% 10%, var(--lutf-note-a, #f6d9d5) 0%, transparent 60%),
-    radial-gradient(90% 70% at 10% 30%, var(--lutf-note-b, #fbeee9) 0%, transparent 65%),
-    var(--lutf-cream);
-}
-.lutf-note:nth-child(3n + 2) {
-  --lutf-note-a: #efd3c3;
-  --lutf-note-b: #f7ece4;
-}
-.lutf-note:nth-child(3n + 3) {
-  --lutf-note-a: #e5d9e6;
-  --lutf-note-b: #f4eef2;
+  left: 4.6%;
+  right: 4.6%;
+  top: 73%;
+  bottom: 4.2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3% 8% 2%;
 }
 .lutf-note__index {
   position: absolute;
-  top: 18px;
-  inset-inline-start: 22px;
+  top: 16px;
+  inset-inline-start: 18px;
   font-family: var(--lutf-font-display);
   font-size: 12px;
   letter-spacing: 0.18em;
-  color: var(--lutf-ink-soft);
+  color: var(--lutf-muted);
 }
 .lutf-note__label {
   font-family: var(--lutf-font-display);
   font-weight: 600;
-  font-size: 22px;
+  font-size: clamp(16px, 4.6vw, 20px);
+  line-height: 1.25;
   text-transform: uppercase;
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   color: var(--lutf-ink);
 }
 .lutf-note__text {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: var(--lutf-ink-soft);
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.lutf-note:has(img) .lutf-note__label,
-.lutf-note:has(img) .lutf-note__text {
-  /* readability over photos */
-  text-shadow: 0 0 18px rgba(250, 247, 244, 0.9);
+@media (min-width: 1024px) {
+  .lutf-note__text {
+    font-size: 13.5px;
+  }
 }
 .lutf-rail-nav {
   display: flex;
@@ -1280,9 +1280,6 @@ main > section.section-benefits {
 .section-testimonials article h3 {
   color: var(--lutf-muted) !important;
   font-weight: 500 !important;
-}
-.section-testimonials article h3::before {
-  content: "— ";
 }
 
 /* Slideshow (Carousel section) dots */

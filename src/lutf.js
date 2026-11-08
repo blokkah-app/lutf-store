@@ -27,6 +27,8 @@
       heroCtaUrl: "/products/",
       swipeLabel: "اسحب",
       notesFallbackTitle: "النفحات العطرية",
+      // shared artwork behind every scent-note card (text sits in its frame)
+      notesBg: "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@349a052b24200fbebc26fe2ab3156c5b31cb2f8c/assets/img/lutf-note-bg.webp",
       quoteLinkText: "عرض كل التقييمات",
       reviewsWord: "تقييم",
       reveal: true,
@@ -1023,13 +1025,14 @@
     var rail = el("div", "lutf-rail");
     rail.setAttribute("role", "list");
     data.notes.forEach(function (n, i) {
-      var card = el("article", "lutf-note" + (n.image ? "" : " lutf-note--plain"));
+      var card = el("article", "lutf-note");
       card.setAttribute("role", "listitem");
+      if (CFG.notesBg) card.style.backgroundImage = "url('" + CFG.notesBg + "')";
       var h = "";
-      if (n.image) h += '<img src="' + esc(n.image) + '" alt="" loading="lazy">';
+      if (n.image) h += '<img class="lutf-note__img" src="' + esc(n.image) + '" alt="" loading="lazy">';
       h += '<span class="lutf-note__index">0' + (i + 1) + "</span>";
-      h += '<h3 class="lutf-note__label">' + esc(n.label) + "</h3>";
-      h += '<p class="lutf-note__text">' + esc(n.text) + "</p>";
+      h += '<div class="lutf-note__frame"><h3 class="lutf-note__label">' + esc(n.label) + "</h3>";
+      h += '<p class="lutf-note__text">' + esc(n.text) + "</p></div>";
       card.innerHTML = h;
       rail.appendChild(card);
     });
@@ -1059,7 +1062,7 @@
       '<div class="lutf-block__inner">' +
       '<div class="lutf-quote__meta">' + meta + "</div>" +
       '<blockquote class="lutf-quote__text">“' + esc(pick.text) + "”</blockquote>" +
-      (pick.name ? '<span class="lutf-quote__author">— ' + esc(pick.name) + "</span>" : "") +
+      (pick.name ? '<span class="lutf-quote__author">' + esc(pick.name) + "</span>" : "") +
       '<a class="lutf-quote__link" href="#reviews">' + esc(CFG.quoteLinkText) + "</a>" +
       "</div>";
     return sec;

@@ -117,7 +117,8 @@ Put this anywhere in the product description:
 
 - The first line is the section title.
 - Each following line is one card: `name | text`. A colon `:` also works instead of `|`.
-- **Optional images:** insert images inside the block in the editor. They are matched to the cards in order (image 1 → card 1, and so on). Cards without an image get a soft blush gradient.
+- **Card artwork:** every note card uses the same background (`assets/img/lutf-note-bg.webp`, set in `notesBg`). The name and text sit inside its framed box.
+- **Optional images:** insert images inside the block in the editor. They are matched to the cards in order (image 1 → card 1, and so on) and shown as a round ingredient photo above the frame.
 - The raw block is removed from the visible description automatically.
 
 ## Config
@@ -128,7 +129,7 @@ The defaults are at the top of `src/lutf.js`. You can also override them by plac
 <script>window.LUTF_CONFIG = { heroTitle: "…", heroCtaUrl: "/categories/…" };</script>
 ```
 
-The keys are `heroVideo`, `heroVideoMobile`, `heroPoster`, `heroPosterMobile`, `heroEyebrow`, `heroTitle`, `heroSubtitle`, `heroCtaText`, `heroCtaUrl`, `swipeLabel`, `notesFallbackTitle`, `quoteLinkText`, `reviewsWord`, `reveal`, `storiesMatch`, `storiesTitle`, `storiesCtaText`, `storiesCtaUrl`, `storiesOnProduct` `stories` (a manual list: `[{image, video, tag, url}]`), `tiktokHandle`, `tiktokTitle`, `tiktokFollowText`, `tiktokOnHome`, `tiktokOnProduct`, `tiktokVideos` (`[{id, user, caption}]`), `whatsapp`, `menuPromo`, `menuCategoriesTitle`, `menuSocialTitle` and `menuMore` (`[{title, links:[{label, url, icon}]}]`; the icons are `sparkle star grid bag box truck help user gift chat`).
+The keys are `heroVideo`, `heroVideoMobile`, `heroPoster`, `heroPosterMobile`, `heroEyebrow`, `heroTitle`, `heroSubtitle`, `heroCtaText`, `heroCtaUrl`, `swipeLabel`, `notesFallbackTitle`, `notesBg`, `quoteLinkText`, `reviewsWord`, `reveal`, `storiesMatch`, `storiesTitle`, `storiesCtaText`, `storiesCtaUrl`, `storiesOnProduct` `stories` (a manual list: `[{image, video, tag, url}]`), `tiktokHandle`, `tiktokTitle`, `tiktokFollowText`, `tiktokOnHome`, `tiktokOnProduct`, `tiktokVideos` (`[{id, user, caption}]`), `whatsapp`, `menuPromo`, `menuCategoriesTitle`, `menuSocialTitle` and `menuMore` (`[{title, links:[{label, url, icon}]}]`; the icons are `sparkle star grid bag box truck help user gift chat`).
 
 Suggested copy for every section is in [`docs/content-guide.md`](docs/content-guide.md).
 
