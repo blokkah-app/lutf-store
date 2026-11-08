@@ -71,7 +71,7 @@ Build after editing `src/`: `./scripts/build.sh`, which needs Node.
     - The image banner becomes a rounded editorial card with white type.
     - Benefits become soft cards.
     - Testimonials become quote cards.
-13. **Background pattern.** A very subtle blush blossom-and-dot pattern on the page and in the menu (`--lutf-pattern` in the CSS).
+13. **Background pattern.** A very subtle blush blossom-and-dot pattern on the page and in the menu (`--lutf-pattern`; its strength is one site-wide setting, `--lutf-pattern-opacity: 0.22`).
 14. **Product description polish.**
     - Scent notes written as a normal list under a heading containing "العطرية" become the notes carousel automatically.
     - "المميزات:" lists become a check-mark grid.

@@ -1306,14 +1306,25 @@ main > section.section-carousel .embla__dots button {
 }
 
 /* ---------- 13. Background pattern -------------------------------------- */
-/* tiny four-petal blossoms + dots in blush, very low contrast */
+/* tiny four-petal blossoms + dots in blush. The artwork is drawn at full
+   strength (= 1) and shown through ONE opacity token, used site-wide. */
 :root {
-  --lutf-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23c98a84'%3E%3Cg fill-opacity='.06' transform='translate(16 16)'%3E%3Cellipse cx='0' cy='-3.2' rx='1.7' ry='2.8'/%3E%3Cellipse cx='0' cy='3.2' rx='1.7' ry='2.8'/%3E%3Cellipse cx='-3.2' cy='0' rx='2.8' ry='1.7'/%3E%3Cellipse cx='3.2' cy='0' rx='2.8' ry='1.7'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.1' fill-opacity='.10'/%3E%3Ccircle cx='48' cy='48' r='1.3' fill-opacity='.07'/%3E%3Ccircle cx='48' cy='16' r='.8' fill-opacity='.05'/%3E%3Ccircle cx='16' cy='48' r='.8' fill-opacity='.05'/%3E%3C/g%3E%3C/svg%3E");
+  --lutf-pattern-opacity: 0.22;
+  --lutf-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23c98a84'%3E%3Cg fill-opacity='.10' transform='translate(16 16)'%3E%3Cellipse cx='0' cy='-3.2' rx='1.7' ry='2.8'/%3E%3Cellipse cx='0' cy='3.2' rx='1.7' ry='2.8'/%3E%3Cellipse cx='-3.2' cy='0' rx='2.8' ry='1.7'/%3E%3Cellipse cx='3.2' cy='0' rx='2.8' ry='1.7'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.1' fill-opacity='.17'/%3E%3Ccircle cx='48' cy='48' r='1.3' fill-opacity='.12'/%3E%3Ccircle cx='48' cy='16' r='.8' fill-opacity='.08'/%3E%3Ccircle cx='16' cy='48' r='.8' fill-opacity='.08'/%3E%3C/g%3E%3C/svg%3E");
 }
 body {
   background-color: var(--lutf-cream);
+}
+/* page: fixed pattern layer behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image: var(--lutf-pattern);
   background-size: 64px 64px;
+  opacity: var(--lutf-pattern-opacity);
 }
 
 /* ---------- 14. Mobile drawer (menu) ------------------------------------ */
@@ -1322,10 +1333,21 @@ body {
   height: calc(100% - 8px - var(--lutf-gutter));
   border-radius: var(--lutf-r-lg);
   background-color: var(--lutf-cream);
-  background-image: var(--lutf-pattern);
-  background-size: 64px 64px;
   box-shadow: 0 18px 40px -24px rgba(46, 38, 35, 0.35);
   overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+/* menu: same pattern, same opacity token */
+#mobile-drawer el-dialog-panel > div.bg-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--lutf-pattern);
+  background-size: 64px 64px;
+  opacity: var(--lutf-pattern-opacity);
 }
 #mobile-drawer el-dialog-panel > div.bg-background > div {
   gap: 18px !important;
