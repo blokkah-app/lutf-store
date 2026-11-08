@@ -781,7 +781,8 @@ html #sticky-cta.translate-y-full {
     flex-basis: calc((100% - 24px) / 3);
   }
 }
-/* the frosted frame in the artwork: 7.9% from the sides, 16%..76.6% vertically */
+/* the frosted frame in the artwork: 7.9% from the sides, 16%..76.6% vertically.
+   Editorial layout: number + hairline + tag on top, name and text at the bottom. */
 .lutf-note__frame {
   position: absolute;
   left: 7.9%;
@@ -790,63 +791,69 @@ html #sticky-cta.translate-y-full {
   bottom: 23.4%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 8% 9%;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9% 9% 10%;
+  text-align: start;
 }
-/* optional per-note ingredient photo, inside the frame above the name */
+.lutf-note__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lutf-note__num {
+  font-family: var(--lutf-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lutf-ink-soft);
+  letter-spacing: 0.04em;
+}
+.lutf-note__rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(46, 38, 35, 0.2);
+}
+.lutf-note__tag {
+  direction: ltr;
+  font-family: var(--lutf-font-display);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lutf-muted);
+  white-space: nowrap;
+}
+/* optional per-note ingredient photo, centred in the frame */
 .lutf-note__img {
-  width: 34%;
+  align-self: center;
+  width: 32%;
   aspect-ratio: 1;
   border-radius: 999px;
   object-fit: cover;
-  margin-bottom: 14px;
   box-shadow: 0 12px 26px -16px rgba(46, 38, 35, 0.4);
   border: 3px solid rgba(255, 255, 255, 0.8);
-}
-.lutf-note__index {
-  position: absolute;
-  top: 16px;
-  inset-inline-start: 18px;
-  font-family: var(--lutf-font-display);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  color: var(--lutf-muted);
 }
 .lutf-note__label {
   font-family: var(--lutf-font-display);
   font-weight: 600;
-  font-size: clamp(20px, 6vw, 28px);
-  line-height: 1.2;
-  text-transform: uppercase;
+  font-size: clamp(26px, 7.6vw, 34px);
+  line-height: 1.1;
   margin: 0 0 10px;
   color: var(--lutf-ink);
 }
-/* small sparkle divider between name and text */
-.lutf-note__label::after {
-  content: "";
-  display: block;
-  width: 14px;
-  height: 14px;
-  margin: 10px auto 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 0c.6 4.2 3.8 7.4 8 8-4.2.6-7.4 3.8-8 8-.6-4.2-3.8-7.4-8-8 4.2-.6 7.4-3.8 8-8z' fill='%23b89a8c'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-}
 .lutf-note__text {
-  font-size: clamp(13px, 3.7vw, 15px);
+  font-size: clamp(13px, 3.6vw, 15px);
   line-height: 1.7;
   color: var(--lutf-ink-soft);
   margin: 0;
-  max-width: 26ch;
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 @media (min-width: 768px) {
   .lutf-note__label {
-    font-size: 24px;
+    font-size: 28px;
   }
   .lutf-note__text {
     font-size: 14px;

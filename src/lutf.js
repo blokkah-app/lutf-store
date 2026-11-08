@@ -1018,6 +1018,15 @@
     }
   }
 
+  // small English tag for the classic note tiers (shown above the Arabic name)
+  function noteTag(label) {
+    var t = String(label || "");
+    if (new RegExp("(المقدمة|العليا|الافتتاحية|top)", "i").test(t)) return "Top notes";
+    if (new RegExp("(القلب|الوسطى|heart|middle)", "i").test(t)) return "Heart notes";
+    if (new RegExp("(القاعدة|الأساسية|الاساسية|base)", "i").test(t)) return "Base notes";
+    return "";
+  }
+
   function buildNotes(data) {
     var sec = el("section", "lutf-block lutf-notes");
     var inner = el("div", "lutf-block__inner");
@@ -1028,11 +1037,15 @@
       var card = el("article", "lutf-note");
       card.setAttribute("role", "listitem");
       if (CFG.notesBg) card.style.backgroundImage = "url('" + CFG.notesBg + "')";
-      var h = '<span class="lutf-note__index">0' + (i + 1) + "</span>";
-      h += '<div class="lutf-note__frame">';
+      var tag = noteTag(n.label);
+      var h = '<div class="lutf-note__frame"><div class="lutf-note__top">';
+      h += '<span class="lutf-note__num">' + (i < 9 ? "0" : "") + (i + 1) + "</span>";
+      h += '<span class="lutf-note__rule" aria-hidden="true"></span>';
+      if (tag) h += '<span class="lutf-note__tag">' + esc(tag) + "</span>";
+      h += "</div>";
       if (n.image) h += '<img class="lutf-note__img" src="' + esc(n.image) + '" alt="" loading="lazy">';
-      h += '<h3 class="lutf-note__label">' + esc(n.label) + "</h3>";
-      h += '<p class="lutf-note__text">' + esc(n.text) + "</p></div>";
+      h += '<div class="lutf-note__body"><h3 class="lutf-note__label">' + esc(n.label) + "</h3>";
+      h += '<p class="lutf-note__text">' + esc(n.text) + "</p></div></div>";
       card.innerHTML = h;
       rail.appendChild(card);
     });
