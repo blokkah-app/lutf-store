@@ -117,8 +117,8 @@ Put this anywhere in the product description:
 
 - The first line is the section title.
 - Each following line is one card: `name | text`. A colon `:` also works instead of `|`.
-- **Card artwork:** every note card uses the same background (`assets/img/lutf-note-bg.webp`, set in `notesBg`). The name and text sit inside its framed box.
-- **Optional images:** insert images inside the block in the editor. They are matched to the cards in order (image 1 → card 1, and so on) and shown as a round ingredient photo above the frame.
+- **Card artwork:** every note card uses the same background (`assets/img/lutf-note-bg.webp`, set in `notesBg`). The name and text sit inside its frosted frame.
+- **Optional images:** insert images inside the block in the editor. They are matched to the cards in order (image 1 → card 1, and so on) and shown as a round ingredient photo inside the frame, above the name.
 - The raw block is removed from the visible description automatically.
 
 ## Config

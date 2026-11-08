@@ -781,32 +781,29 @@ html #sticky-cta.translate-y-full {
     flex-basis: calc((100% - 24px) / 3);
   }
 }
-/* optional per-note ingredient photo, floating in the empty upper area */
-.lutf-note__img {
-  position: absolute;
-  top: 16%;
-  left: 50%;
-  width: 44%;
-  aspect-ratio: 1;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  object-fit: cover;
-  box-shadow: 0 16px 34px -18px rgba(46, 38, 35, 0.4);
-  border: 4px solid rgba(250, 247, 244, 0.85);
-}
-/* the framed box in the artwork: 4.6% from the sides, 73%..95.8% vertically */
+/* the frosted frame in the artwork: 7.9% from the sides, 16%..76.6% vertically */
 .lutf-note__frame {
   position: absolute;
-  left: 4.6%;
-  right: 4.6%;
-  top: 73%;
-  bottom: 4.2%;
+  left: 7.9%;
+  right: 7.9%;
+  top: 16%;
+  bottom: 23.4%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3% 8% 2%;
+  padding: 8% 9%;
+}
+/* optional per-note ingredient photo, inside the frame above the name */
+.lutf-note__img {
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  object-fit: cover;
+  margin-bottom: 14px;
+  box-shadow: 0 12px 26px -16px rgba(46, 38, 35, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.8);
 }
 .lutf-note__index {
   position: absolute;
@@ -820,25 +817,39 @@ html #sticky-cta.translate-y-full {
 .lutf-note__label {
   font-family: var(--lutf-font-display);
   font-weight: 600;
-  font-size: clamp(16px, 4.6vw, 20px);
-  line-height: 1.25;
+  font-size: clamp(20px, 6vw, 28px);
+  line-height: 1.2;
   text-transform: uppercase;
-  margin: 0 0 4px;
+  margin: 0 0 10px;
   color: var(--lutf-ink);
 }
+/* small sparkle divider between name and text */
+.lutf-note__label::after {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 10px auto 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 0c.6 4.2 3.8 7.4 8 8-4.2.6-7.4 3.8-8 8-.6-4.2-3.8-7.4-8-8 4.2-.6 7.4-3.8 8-8z' fill='%23b89a8c'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
 .lutf-note__text {
-  font-size: 12.5px;
-  line-height: 1.5;
+  font-size: clamp(13px, 3.7vw, 15px);
+  line-height: 1.7;
   color: var(--lutf-ink-soft);
   margin: 0;
+  max-width: 26ch;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
+  .lutf-note__label {
+    font-size: 24px;
+  }
   .lutf-note__text {
-    font-size: 13.5px;
+    font-size: 14px;
   }
 }
 .lutf-rail-nav {

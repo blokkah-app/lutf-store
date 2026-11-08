@@ -28,7 +28,7 @@
       swipeLabel: "اسحب",
       notesFallbackTitle: "النفحات العطرية",
       // shared artwork behind every scent-note card (text sits in its frame)
-      notesBg: "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@349a052b24200fbebc26fe2ab3156c5b31cb2f8c/assets/img/lutf-note-bg.webp",
+      notesBg: "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@0e7dca44dea03571c25570d2ced300edf1138abb/assets/img/lutf-note-bg.webp",
       quoteLinkText: "عرض كل التقييمات",
       reviewsWord: "تقييم",
       reveal: true,
@@ -1028,10 +1028,10 @@
       var card = el("article", "lutf-note");
       card.setAttribute("role", "listitem");
       if (CFG.notesBg) card.style.backgroundImage = "url('" + CFG.notesBg + "')";
-      var h = "";
+      var h = '<span class="lutf-note__index">0' + (i + 1) + "</span>";
+      h += '<div class="lutf-note__frame">';
       if (n.image) h += '<img class="lutf-note__img" src="' + esc(n.image) + '" alt="" loading="lazy">';
-      h += '<span class="lutf-note__index">0' + (i + 1) + "</span>";
-      h += '<div class="lutf-note__frame"><h3 class="lutf-note__label">' + esc(n.label) + "</h3>";
+      h += '<h3 class="lutf-note__label">' + esc(n.label) + "</h3>";
       h += '<p class="lutf-note__text">' + esc(n.text) + "</p></div>";
       card.innerHTML = h;
       rail.appendChild(card);
