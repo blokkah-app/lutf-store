@@ -55,7 +55,28 @@ Build after editing `src/`: `./scripts/build.sh`, which needs Node.
    - A rating chip under the title (`5.0 ★★★★★ (12 تقييم)`).
    - The reviews summary becomes a card.
    - A large quote section shows the store's best real review.
-10. **Extras.**
+10. **TikTok feed.** "LUTF على تيك توك" with a follow button and a swipeable rail of TikTok videos.
+    - It uses TikTok's official player, which loads only as cards come into view.
+    - Tap to play; swiping away pauses the video.
+    - The videos are set in `tiktokVideos`. Leave the list empty for TikTok's automatic profile embed instead.
+    - It shows on the home page after the stories; set `tiktokOnProduct: true` to add it to product pages.
+11. **Mobile menu.** A floating rounded panel on the brand pattern, containing:
+    - the promo pill;
+    - **shop-by-category** photo tiles, read from the home page Categories section;
+    - the store's links in large display type;
+    - two "more" grids: **اكتشف** (new, best sellers, categories, cart) and **مساعدة** (track order, shipping, FAQ, account);
+    - social buttons from Zid's contact settings, plus WhatsApp. Edit them with `menuMore` / `whatsapp`.
+12. **Home sections.**
+    - Categories become tall tiles with a frosted label and arrow.
+    - The image banner becomes a rounded editorial card with white type.
+    - Benefits become soft cards.
+    - Testimonials become quote cards.
+13. **Background pattern.** A very subtle blush blossom-and-dot pattern on the page and in the menu (`--lutf-pattern` in the CSS).
+14. **Product description polish.**
+    - Scent notes written as a normal list under a heading containing "العطرية" become the notes carousel automatically.
+    - "المميزات:" lists become a check-mark grid.
+    - The short description becomes one clean sentence.
+15. **Extras.**
    - Brand colours and fonts applied site-wide.
    - Pill-shaped buttons and inputs.
    - Rounded image banners and footer.
@@ -107,7 +128,9 @@ The defaults are at the top of `src/lutf.js`. You can also override them by plac
 <script>window.LUTF_CONFIG = { heroTitle: "…", heroCtaUrl: "/categories/…" };</script>
 ```
 
-The keys are `heroVideo`, `heroVideoMobile`, `heroPoster`, `heroPosterMobile`, `heroEyebrow`, `heroTitle`, `heroSubtitle`, `heroCtaText`, `heroCtaUrl`, `swipeLabel`, `notesFallbackTitle`, `quoteLinkText`, `reviewsWord`, `reveal`, `storiesMatch`, `storiesTitle`, `storiesCtaText`, `storiesCtaUrl`, `storiesOnProduct` and `stories` (a manual list: `[{image, video, tag, url}]`).
+The keys are `heroVideo`, `heroVideoMobile`, `heroPoster`, `heroPosterMobile`, `heroEyebrow`, `heroTitle`, `heroSubtitle`, `heroCtaText`, `heroCtaUrl`, `swipeLabel`, `notesFallbackTitle`, `quoteLinkText`, `reviewsWord`, `reveal`, `storiesMatch`, `storiesTitle`, `storiesCtaText`, `storiesCtaUrl`, `storiesOnProduct` `stories` (a manual list: `[{image, video, tag, url}]`), `tiktokHandle`, `tiktokTitle`, `tiktokFollowText`, `tiktokOnHome`, `tiktokOnProduct`, `tiktokVideos` (`[{id, user, caption}]`), `whatsapp`, `menuPromo`, `menuCategoriesTitle`, `menuSocialTitle` and `menuMore` (`[{title, links:[{label, url, icon}]}]`; the icons are `sparkle star grid bag box truck help user gift chat`).
+
+Suggested copy for every section is in [`docs/content-guide.md`](docs/content-guide.md).
 
 Assets still needed, and the proposed home page layout: [`docs/assets-and-home-structure.md`](docs/assets-and-home-structure.md).
 

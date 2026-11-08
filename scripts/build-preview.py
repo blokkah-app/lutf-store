@@ -9,9 +9,9 @@ Usage:
 The preview:
   * downloads the live home + one product page,
   * removes the store's current custom stylesheet and injects src/lutf.css + src/lutf.js,
-  * simulates the native announcement bar (free-shipping text) and a sample
-    [notes] block in the product description, so every feature can be checked
-    before the code is pasted into Zid.
+  * simulates the native announcement bar (free-shipping text) and, when the
+    home page has none, a sample "you + lutf" gallery, so every feature can be
+    checked before the code is pasted into Zid.
 """
 import pathlib
 import re
@@ -23,7 +23,7 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "preview"
 STORE = (sys.argv[1] if len(sys.argv) > 1 else "https://fn8d6o.zid.store").rstrip("/")
-SLUG = sys.argv[2] if len(sys.argv) > 2 else "بكج-4-حبات-lutf-care"
+SLUG = sys.argv[2] if len(sys.argv) > 2 else "bloom"
 
 UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148"
 
@@ -33,13 +33,6 @@ ANNOUNCEMENT = (
     '<p class="text-sm text-center">شحن مجاني للطلبات فوق 200 ر.س</p></div></div>'
 )
 
-SAMPLE_NOTES = (
-    "<p>[notes] ناعمة ورقيقة</p>"
-    "<p>النفحات العليا | فراولة، براعم الكشمش، فاوانيا وردية</p>"
-    "<p>النفحات الوسطى | ورد، ياسمين، زهر البرتقال</p>"
-    "<p>النفحات الأساسية | مسك أبيض، فانيليا ناعمة</p>"
-    "<p>[/notes]</p>"
-)
 
 
 def sample_gallery(html: str) -> str:
@@ -95,13 +88,6 @@ def inject(html: str, page: str) -> str:
         html = html.replace('<div class="sticky top-0 z-50">', '<div class="sticky top-0 z-50">' + ANNOUNCEMENT, 1)
     if page == "home" and "section-gallery" not in html:
         html = html.replace("</main>", sample_gallery(html) + "</main>", 1)
-    if page == "product" and "[notes" not in html:
-        html = re.sub(
-            r'(<div class="text-foreground prose prose-sm max-w-none">)',
-            r"\1" + SAMPLE_NOTES,
-            html,
-            count=1,
-        )
     return html
 
 

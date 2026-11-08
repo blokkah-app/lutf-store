@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  var CDN = "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@780d0ae60678e0fc061c774a9182ee2987dcc4c5/assets/video/";
+  var CDN = "https://cdn.jsdelivr.net/gh/blokkah-app/lutf-store@6c91a73f2d7cf113348d1607a564be2a15e0008b/assets/video/";
 
   /* ------------------------------------------------------------------
      CONFIG — edit here. Anything set in window.LUTF_CONFIG before this
@@ -22,7 +22,7 @@
       heroPosterMobile: CDN + "lutf-hero-poster-mobile.jpg",
       heroEyebrow: "LUTF Bloom",
       heroTitle: "لطفٌ في كل لمسة.",
-      heroSubtitle: "",
+      heroSubtitle: "يطهّر، يرطّب، ويترك يدك برائحة جميلة.",
       heroCtaText: "تسوّق الآن",
       heroCtaUrl: "/products/",
       swipeLabel: "اسحب",
@@ -42,6 +42,51 @@
       storiesCtaUrl: "", // empty = first Instagram/TikTok link found in the footer
       storiesOnProduct: true,
       stories: [], // optional manual list: [{ image, video, tag, url }]
+
+      // TikTok feed. Each entry is one TikTok video (id from its URL:
+      // tiktok.com/@user/video/<id>). Leave the list empty to show TikTok's
+      // official profile embed (latest videos, automatic) instead.
+      tiktokHandle: "lutfcare",
+      tiktokTitle: "LUTF على تيك توك",
+      tiktokFollowText: "تابعنا",
+      tiktokOnHome: true,
+      tiktokOnProduct: false,
+      tiktokVideos: [
+        { id: "7699094819057995015", user: "mahatrying", caption: "جولة تسوّق مع لطف" },
+        { id: "7700902756088941832", user: "sara.moh26", caption: "صباح الماتشا ولطف" },
+        { id: "7702146919203638548", user: "wala2.k", caption: "مشاركة في مسابقة لُطف" },
+        { id: "7685040757635304712", user: "mahatrying", caption: "لحظات العائلة" },
+        { id: "7700919688485768466", user: "zaqwx6", caption: "رسمة بثيم رمضاني" },
+        { id: "7689477769964637446", user: "hanoufzone", caption: "فعالية اليوم الوطني" },
+        { id: "7700281964166745350", user: "ada_m.11", caption: "لمسابقة لطف: رائحة الورد" },
+        { id: "7705508985151016193", user: "lutfcare", caption: "من لطف" },
+      ],
+
+      // Mobile menu extras. Promo = the announcement text when left empty.
+      whatsapp: "", // international format without +, e.g. "9665XXXXXXXX"
+      menuPromo: "",
+      menuCategoriesTitle: "تسوّق حسب الفئة",
+      menuSocialTitle: "تابعنا",
+      menuMore: [
+        {
+          title: "اكتشف",
+          links: [
+            { label: "وصل حديثاً", url: "/products?sort_by=created_at&order=desc", icon: "sparkle" },
+            { label: "الأكثر مبيعاً", url: "/products?sort_by=popularity_order&order=asc", icon: "star" },
+            { label: "كل التصنيفات", url: "/categories/", icon: "grid" },
+            { label: "السلة", url: "/cart", icon: "bag" },
+          ],
+        },
+        {
+          title: "مساعدة",
+          links: [
+            { label: "تتبّع طلبك", url: "/account/orders", icon: "box" },
+            { label: "الشحن والدفع", url: "/shipping-and-payment", icon: "truck" },
+            { label: "الأسئلة الشائعة", url: "/faqs", icon: "help" },
+            { label: "حسابي", url: "/account", icon: "user" },
+          ],
+        },
+      ],
     },
     window.LUTF_CONFIG || {}
   );
@@ -71,6 +116,34 @@
   };
   var STAR =
     '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.2l2.06 4.27 4.69.6-3.44 3.25.86 4.65L8 11.72l-4.17 2.25.86-4.65L1.25 6.07l4.69-.6L8 1.2z"/></svg>';
+  var ICONS = {
+    sparkle: '<path d="M10 2.5l1.6 4.4 4.4 1.6-4.4 1.6L10 14.5l-1.6-4.4L4 8.5l4.4-1.6L10 2.5zM15.5 13l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8z"/>',
+    star: '<path d="M10 2.8l2.2 4.6 5 .6-3.7 3.5.9 5-4.4-2.4-4.4 2.4.9-5L2.8 8l5-.6L10 2.8z"/>',
+    grid: '<rect x="3" y="3" width="5.5" height="5.5" rx="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.5"/><rect x="11.5" y="11.5" width="5.5" height="5.5" rx="1.5"/>',
+    bag: '<path d="M4.5 6.5h11l-.8 10H5.3l-.8-10z"/><path d="M7.5 6.5V5.5a2.5 2.5 0 015 0v1"/>',
+    box: '<path d="M3 6.5L10 3l7 3.5v7L10 17l-7-3.5v-7z"/><path d="M3 6.5L10 10l7-3.5M10 10v7"/>',
+    truck: '<path d="M2.5 5.5h9v8h-9zM11.5 8.5h3l3 3v2h-6"/><circle cx="6" cy="14.5" r="1.5"/><circle cx="14.5" cy="14.5" r="1.5"/>',
+    help: '<circle cx="10" cy="10" r="7.5"/><path d="M7.8 7.8a2.3 2.3 0 114 1.6c-.8.6-1.8 1-1.8 2.3M10 14.2v.1"/>',
+    user: '<circle cx="10" cy="7" r="3.2"/><path d="M3.8 17c.8-3 3.2-4.6 6.2-4.6s5.4 1.6 6.2 4.6"/>',
+    gift: '<rect x="3" y="7.5" width="14" height="3" rx="1"/><path d="M4.5 10.5v6.5h11v-6.5M10 7.5V17M10 7.5S8.8 3.5 6.8 4.2C5.3 4.8 6.6 7.5 10 7.5zM10 7.5s1.2-4 3.2-3.3c1.5.6.2 3.3-3.2 3.3z"/>',
+    truckFree: '<path d="M2.5 5.5h9v8h-9zM11.5 8.5h3l3 3v2h-6"/><circle cx="6" cy="14.5" r="1.5"/><circle cx="14.5" cy="14.5" r="1.5"/>',
+    chat: '<path d="M10 3a7 7 0 00-6.1 10.4L3 17l3.7-.9A7 7 0 1010 3z"/>',
+  };
+  var icon = function (name) {
+    return (
+      '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      (ICONS[name] || ICONS.sparkle) +
+      "</svg>"
+    );
+  };
+  var BRAND = {
+    tiktok: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.6 5.8A4.3 4.3 0 0115.5 3h-3.1v12.4a2.6 2.6 0 11-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 00-.8-.1 5.8 5.8 0 105.8 5.8V9.1a7.4 7.4 0 004.3 1.4V7.4a4.3 4.3 0 01-3.3-1.6z"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="currentColor"/></svg>',
+    snapchat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c2.9 0 4.8 2.2 4.8 4.9v2.1l1.7-.4c.6 0 .8.7.3 1l-1.8 1c.6 1.6 1.8 2.8 3.4 3.3-.4.8-1.5 1-2.6 1.2-.2.6-.2 1.2-.7 1.2-.8 0-1.6-.4-2.7 0-1 .4-1.6 1.4-2.4 1.4s-1.4-1-2.4-1.4c-1.1-.4-1.9 0-2.7 0-.5 0-.5-.6-.7-1.2-1.1-.2-2.2-.4-2.6-1.2 1.6-.5 2.8-1.7 3.4-3.3l-1.8-1c-.5-.3-.3-1 .3-1l1.7.4V8.4c0-2.7 1.9-4.9 4.8-4.9z"/></svg>',
+    twitter: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8 8 10.2h-6.3l-4.9-6.4L5.3 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.9L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg>',
+    facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1z"/></svg>',
+    whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 00-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1012 3.5z"/><path d="M9 8.6c.2-.4.5-.4.7-.4h.5c.2 0 .4.1.5.4l.6 1.5c.1.2 0 .5-.1.6l-.5.6c.6 1.1 1.5 2 2.6 2.6l.6-.5c.2-.2.4-.2.6-.1l1.5.6c.3.1.4.3.4.5v.5c0 .2 0 .5-.4.7-.5.3-1.4.6-2.6.1A9 9 0 018.7 11c-.5-1.2-.2-2 .3-2.4z" fill="currentColor" stroke="none"/></svg>',
+  };
   var ARROW =
     '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -123,7 +196,7 @@
     }
 
     if (hero) {
-      var hb = hero.getBoundingClientRect().bottom;
+      var hb = overlayOpen() ? 0 : hero.getBoundingClientRect().bottom; // menu/search open: solid bar
       // switch to glass before the bar reaches the hero title/CTA area
       body.classList.toggle("lutf-on-hero", hb > headH + 240);
     }
@@ -154,6 +227,15 @@
       update();
     });
     wrap.addEventListener("transitionend", syncHeaderH);
+    // re-evaluate the bar style whenever the menu or search opens/closes
+    if ("MutationObserver" in window) {
+      var mo = new MutationObserver(function () {
+        update();
+      });
+      $$("#mobile-drawer, #search-dialog").forEach(function (d) {
+        mo.observe(d, { attributes: true, attributeFilter: ["open"] });
+      });
+    }
     // keep the bar in view (and the drawer anchored) when the menu opens
     doc.addEventListener(
       "click",
@@ -362,6 +444,52 @@
       row.insertBefore(score, row.firstChild);
     }
     if (rv.count) link.textContent = "(" + rv.count + " " + CFG.reviewsWord + ")";
+    else link.textContent = CFG.firstReviewText || "كن أول من يقيّم";
+  }
+
+  // Notes written the "normal" way in the description:
+  //   <p><strong>التركيبة العطرية:</strong></p>
+  //   <ul><li><strong>المقدمة:</strong> …</li> … </ul>
+  function autoNotes(prose) {
+    var found = null;
+    $$("p, h2, h3, h4", prose).some(function (hd) {
+      var t = (hd.textContent || "").trim();
+      if (t.length > 40 || !new RegExp("(عطري|النفحات|notes)", "i").test(t)) return false;
+      var ul = hd.nextElementSibling;
+      if (!ul || ul.tagName !== "UL") return false;
+      var notes = [];
+      $$(":scope > li", ul).forEach(function (li) {
+        var st = $("strong, b", li);
+        var label = st ? st.textContent : "";
+        var text = (li.textContent || "").replace(label, "");
+        label = label.replace(/[:\uFF1A\s]+$/, "").trim();
+        text = text.replace(/^[:\uFF1A\s]+/, "").trim();
+        if (label && text) notes.push({ label: label, text: text });
+      });
+      if (notes.length >= 2) {
+        found = { title: t.replace(/[:\uFF1A\s]+$/, ""), notes: notes };
+        hd.classList.add("lutf-moved");
+        ul.classList.add("lutf-moved");
+        return true;
+      }
+      return false;
+    });
+    return found;
+  }
+
+  // "المميزات:" list → check-mark grid; short description → first sentence
+  function polishDescription() {
+    var prose = $("#additional-info .prose");
+    if (prose) {
+      $$("p, h2, h3, h4", prose).forEach(function (hd) {
+        var t = (hd.textContent || "").trim();
+        var ul = hd.nextElementSibling;
+        if (t.length < 30 && new RegExp("(المميزات|مميزات|features)", "i").test(t) && ul && ul.tagName === "UL") ul.classList.add("lutf-features");
+      });
+    }
+    var short = $(".product-details-column .prose-theme");
+    var firstP = prose && $("p", prose);
+    if (short && firstP && firstP.textContent.trim().length > 20) short.textContent = firstP.textContent.trim();
   }
 
   // Parse a [notes] … [/notes] block written in the product description
@@ -370,7 +498,7 @@
     if (!prose) return null;
     var text = prose.innerText || prose.textContent || "";
     var start = text.search(/\[notes[^\]]*\]/i);
-    if (start < 0) return null;
+    if (start < 0) return autoNotes(prose);
 
     var kids = Array.prototype.slice.call(prose.children);
     var inBlock = false;
@@ -476,7 +604,6 @@
   }
 
   /* ---------- Client stories ---------------------------------------- */
-  var STORIES_KEY = "lutf:stories:v1";
   var MP4 = /\.mp4(\?|#|$)/i;
 
   function storiesFromGallery(root) {
@@ -580,53 +707,313 @@
     return sec;
   }
 
-  function saveStories(data) {
+  /* ---------- Data shared across pages (read on the home page, cached) ---------- */
+  var HOME_KEY = "lutf:home:v2";
+
+  function catsFromHome(root) {
+    var out = [];
+    $$(".section-categories .embla__slide a[href]", root).forEach(function (a) {
+      var img = $("img", a);
+      var h = $("h3", a);
+      out.push({
+        url: a.getAttribute("href"),
+        label: h ? h.textContent.trim() : img ? img.getAttribute("alt") || "" : "",
+        image: img ? img.getAttribute("src") || "" : "",
+      });
+    });
+    return out;
+  }
+
+  function readHome(root) {
+    var st = storiesFromGallery(root);
+    return {
+      stories: st ? { title: st.title, items: st.items } : null,
+      cats: catsFromHome(root),
+    };
+  }
+
+  function saveHome(data) {
     try {
-      localStorage.setItem(STORIES_KEY, JSON.stringify({ t: Date.now(), title: data.title, items: data.items }));
+      localStorage.setItem(HOME_KEY, JSON.stringify({ t: Date.now(), stories: data.stories, cats: data.cats }));
     } catch (e) {}
+  }
+
+  var homePending = null;
+  function loadHome(cb) {
+    try {
+      var c = JSON.parse(localStorage.getItem(HOME_KEY) || "null");
+      if (c && Date.now() - c.t < 12 * 3600 * 1000) return cb(c);
+    } catch (e) {}
+    if (!window.fetch || !window.DOMParser) return cb({ stories: null, cats: [] });
+    // not cached yet: read the home page once, in the background
+    if (!homePending) {
+      homePending = fetch("/", { credentials: "same-origin" })
+        .then(function (r) {
+          return r.ok ? r.text() : "";
+        })
+        .then(function (html) {
+          var data = html ? readHome(new DOMParser().parseFromString(html, "text/html")) : { stories: null, cats: [] };
+          saveHome(data);
+          return data;
+        })
+        .catch(function () {
+          return { stories: null, cats: [] };
+        });
+    }
+    homePending.then(cb);
   }
 
   function loadStories(cb) {
     if (CFG.stories && CFG.stories.length) return cb({ title: CFG.storiesTitle, items: CFG.stories });
-    try {
-      var c = JSON.parse(localStorage.getItem(STORIES_KEY) || "null");
-      if (c && c.items && Date.now() - c.t < 12 * 3600 * 1000) return cb(c);
-    } catch (e) {}
-    // not cached yet: read the home page once, in the background
-    if (!window.fetch || !window.DOMParser) return;
-    fetch("/", { credentials: "same-origin" })
-      .then(function (r) {
-        return r.ok ? r.text() : "";
-      })
-      .then(function (html) {
-        if (!html) return;
-        var d = new DOMParser().parseFromString(html, "text/html");
-        var data = storiesFromGallery(d);
-        if (data) {
-          saveStories(data);
-          cb(data);
-        }
-      })
-      .catch(function () {});
+    loadHome(function (d) {
+      if (d && d.stories && d.stories.items && d.stories.items.length) cb(d.stories);
+    });
   }
 
   function initStoriesHome() {
     if (body.getAttribute("data-template") !== "home") return;
+    saveHome(readHome(doc));
     var data = storiesFromGallery(doc);
     if (!data) {
-      try {
-        localStorage.setItem(STORIES_KEY, JSON.stringify({ t: Date.now(), items: [] }));
-      } catch (e) {}
       if (CFG.stories && CFG.stories.length) {
         var main = $("main");
         if (main) main.appendChild(buildStories({ title: CFG.storiesTitle, items: CFG.stories }));
       }
       return;
     }
-    saveStories(data);
     var sec = buildStories(data);
     data.section.parentNode.insertBefore(sec, data.section);
     data.section.classList.add("lutf-stories-source");
+  }
+
+  /* ---------- TikTok feed ------------------------------------------- */
+  var PLAY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11a.7.7 0 001.1.6l8.6-5.5a.7.7 0 000-1.2L5.1 1.9A.7.7 0 004 2.5z" fill="currentColor"/></svg>';
+
+  function ttPost(frame, type) {
+    try {
+      frame.contentWindow.postMessage({ type: type, value: null, "x-tiktok-player": true }, "*");
+    } catch (e) {}
+  }
+
+  function buildTikTok() {
+    var handle = CFG.tiktokHandle;
+    if (!handle) return null;
+    var profile = "https://www.tiktok.com/@" + encodeURIComponent(handle);
+    var sec = el("section", "lutf-tiktok");
+    var panel = el("div", "lutf-tiktok__panel");
+    panel.innerHTML =
+      '<div class="lutf-tiktok__head"><div class="lutf-tiktok__who"><span class="lutf-tiktok__logo">' + BRAND.tiktok + "</span>" +
+      '<div><h2 class="lutf-tiktok__title">' + esc(CFG.tiktokTitle) + '</h2><span class="lutf-tiktok__handle">@' + esc(handle) + "</span></div></div>" +
+      '<a class="lutf-tiktok__follow" href="' + profile + '" target="_blank" rel="noopener">' + esc(CFG.tiktokFollowText) + "</a></div>";
+
+    var vids = (CFG.tiktokVideos || []).filter(function (v) {
+      return v && /^\d{8,25}$/.test(String(v.id));
+    });
+
+    if (!vids.length) {
+      // official TikTok creator embed: always shows the latest videos
+      var box = el("div", "lutf-tiktok__embed");
+      box.innerHTML =
+        '<blockquote class="tiktok-embed" cite="' + profile + '" data-unique-id="' + esc(handle) +
+        '" data-embed-type="creator" style="max-width:780px;min-width:288px;"><section><a target="_blank" href="' + profile + '">@' + esc(handle) + "</a></section></blockquote>";
+      panel.appendChild(box);
+      sec.appendChild(panel);
+      var js = el("script");
+      js.async = true;
+      js.src = "https://www.tiktok.com/embed.js";
+      sec.appendChild(js);
+      return sec;
+    }
+
+    var rail = el("div", "lutf-rail");
+    rail.setAttribute("role", "list");
+    var cards = [];
+    vids.forEach(function (v) {
+      var card = el("div", "lutf-tt");
+      card.setAttribute("role", "listitem");
+      card.dataset.id = String(v.id);
+      card.innerHTML =
+        '<button type="button" class="lutf-tt__cover" aria-label="' + esc("تشغيل فيديو @" + (v.user || handle)) + '">' +
+        '<span class="lutf-tt__play">' + PLAY_ICON + "</span>" +
+        '<span><span class="lutf-tt__user">@' + esc(v.user || handle) + "</span>" +
+        (v.caption ? '<span class="lutf-tt__caption" dir="auto">' + esc(v.caption) + "</span>" : "") +
+        "</span></button>";
+      rail.appendChild(card);
+      cards.push(card);
+    });
+
+    var load = function (card) {
+      if (card.querySelector("iframe")) return card.querySelector("iframe");
+      var f = el("iframe");
+      f.src =
+        "https://www.tiktok.com/player/v1/" + card.dataset.id +
+        "?controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1&timestamp=0&loop=1&music_info=0&description=0&rel=0&native_context_menu=0&closed_caption=0";
+      f.title = "TikTok";
+      f.loading = "lazy";
+      f.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
+      f.allowFullscreen = true;
+      f.addEventListener("load", function () {
+        card.classList.add("is-loaded");
+      });
+      card.insertBefore(f, card.firstChild);
+      return f;
+    };
+    var deactivate = function (card) {
+      if (!card.classList.contains("is-active")) return;
+      card.classList.remove("is-active");
+      var f = card.querySelector("iframe");
+      if (f) ttPost(f, "pause");
+    };
+    cards.forEach(function (card) {
+      $(".lutf-tt__cover", card).addEventListener("click", function () {
+        cards.forEach(function (c) {
+          if (c !== card) deactivate(c);
+        });
+        var f = load(card);
+        card.classList.add("is-active");
+        ttPost(f, "play");
+      });
+    });
+    // load players (which show the real cover) only as cards come near view
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) {
+              load(en.target);
+              io.unobserve(en.target);
+            }
+          });
+        },
+        { rootMargin: "200px 400px" }
+      );
+      cards.forEach(function (c) {
+        io.observe(c);
+      });
+    } else cards.forEach(load);
+    // swiping away pauses the playing video
+    rail.addEventListener(
+      "scroll",
+      function () {
+        cards.forEach(function (c) {
+          if (!c.classList.contains("is-active")) return;
+          var r = c.getBoundingClientRect();
+          var rr = rail.getBoundingClientRect();
+          if (r.right < rr.left + 20 || r.left > rr.right - 20) deactivate(c);
+        });
+      },
+      { passive: true }
+    );
+
+    panel.appendChild(rail);
+    if (vids.length > 1) {
+      var foot = el("div", "lutf-rail-foot");
+      foot.appendChild(railProgress(rail));
+      foot.appendChild(railNav(rail));
+      panel.appendChild(foot);
+    }
+    sec.appendChild(panel);
+    return sec;
+  }
+
+  function initTikTokHome() {
+    if (body.getAttribute("data-template") !== "home" || !CFG.tiktokOnHome) return;
+    var sec = buildTikTok();
+    if (!sec) return;
+    var after = $(".lutf-stories");
+    var main = $("main#main") || $("main");
+    if (after) after.parentNode.insertBefore(sec, after.nextSibling);
+    else if (main) main.appendChild(sec);
+  }
+
+  /* ---------- Mobile menu ------------------------------------------- */
+  function socialLinks() {
+    var out = [];
+    var c = {};
+    try {
+      c = (window.__vitrinStoreSettings && window.__vitrinStoreSettings.settings.contact) || {};
+    } catch (e) {}
+    var base = {
+      tiktok: "https://www.tiktok.com/@",
+      instagram: "https://www.instagram.com/",
+      snapchat: "https://www.snapchat.com/add/",
+      twitter: "https://x.com/",
+      facebook: "https://www.facebook.com/",
+    };
+    var names = { tiktok: "TikTok", instagram: "Instagram", snapchat: "Snapchat", twitter: "X", facebook: "Facebook" };
+    Object.keys(base).forEach(function (k) {
+      var v = c[k];
+      if (k === "tiktok" && !v) v = CFG.tiktokHandle;
+      if (!v) return;
+      v = String(v).trim().replace(/^@/, "");
+      out.push({ key: k, label: names[k], url: /^https?:/i.test(v) ? v : base[k] + v });
+    });
+    var wa = String(CFG.whatsapp || c.phone || "").replace(/[^\d]/g, "");
+    if (wa) out.push({ key: "whatsapp", label: "واتساب", url: "https://wa.me/" + wa });
+    return out;
+  }
+
+  function initDrawer() {
+    var scroller = $("#mobile-drawer el-dialog-panel > div.bg-background > div");
+    if (!scroller || scroller.dataset.lutf) return;
+    scroller.dataset.lutf = "1";
+
+    // promo pill (announcement text) + categories, at the top
+    var top = el("div", "lutf-drawer-block");
+    var annText = CFG.menuPromo || ($("[data-announcement-bar]") ? $("[data-announcement-bar]").textContent.trim() : "");
+    if (annText) top.innerHTML = '<div class="lutf-drawer-promo">' + icon("truckFree") + "<span>" + esc(annText) + "</span></div>";
+    scroller.insertBefore(top, scroller.firstChild);
+
+    var catsBlock = el("div", "lutf-drawer-block");
+    top.parentNode.insertBefore(catsBlock, top.nextSibling);
+    var fillCats = function (cats) {
+      if (!cats || !cats.length || catsBlock.childNodes.length) return;
+      var h = '<p class="lutf-drawer-label">' + esc(CFG.menuCategoriesTitle) + '</p><div class="lutf-drawer-cats">';
+      cats.forEach(function (c) {
+        h += '<a class="lutf-drawer-cat" href="' + esc(c.url) + '">' +
+          (c.image ? '<img src="' + esc(c.image) + '" alt="" loading="lazy">' : "") +
+          "<span>" + esc(c.label) + "</span></a>";
+      });
+      catsBlock.innerHTML = h + "</div>";
+    };
+    if (body.getAttribute("data-template") === "home") fillCats(catsFromHome(doc));
+    else {
+      var ask = function () {
+        loadHome(function (d) {
+          fillCats(d && d.cats);
+        });
+      };
+      // read the cache now; fetch the home page only when the menu is opened
+      try {
+        var c = JSON.parse(localStorage.getItem(HOME_KEY) || "null");
+        if (c && c.cats) fillCats(c.cats);
+      } catch (e) {}
+      var btn = $('[onclick*="mobile-drawer"]');
+      if (btn) btn.addEventListener("click", ask, { once: true });
+    }
+
+    // "more": grouped quick links + social, after the theme's own links
+    var account = $(".border-t.pt-4", scroller);
+    (CFG.menuMore || []).forEach(function (g) {
+      if (!g || !g.links || !g.links.length) return;
+      var b = el("div", "lutf-drawer-block");
+      var h = '<p class="lutf-drawer-label">' + esc(g.title || "") + '</p><div class="lutf-drawer-grid">';
+      g.links.forEach(function (l) {
+        h += '<a class="lutf-drawer-link" href="' + esc(l.url) + '">' + icon(l.icon) + "<span>" + esc(l.label) + "</span></a>";
+      });
+      b.innerHTML = h + "</div>";
+      scroller.insertBefore(b, account || null);
+    });
+    var soc = socialLinks();
+    if (soc.length) {
+      var sb = el("div", "lutf-drawer-block");
+      var sh = '<p class="lutf-drawer-label">' + esc(CFG.menuSocialTitle) + '</p><div class="lutf-drawer-social">';
+      soc.forEach(function (x) {
+        sh += '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + (BRAND[x.key] || "") + "<span>" + esc(x.label) + "</span></a>";
+      });
+      sb.innerHTML = sh + "</div>";
+      scroller.insertBefore(sb, account || null);
+    }
   }
 
   function buildNotes(data) {
@@ -685,6 +1072,9 @@
     var section = mainSec.closest("section");
     var rv = readReviews();
     enhanceRatingChip(rv);
+    try {
+      polishDescription();
+    } catch (e) {}
 
     var anchor = section;
     var notes = extractNotes();
@@ -697,6 +1087,13 @@
     if (q) {
       anchor.parentNode.insertBefore(q, anchor.nextSibling);
       anchor = q;
+    }
+    if (CFG.tiktokOnProduct) {
+      var tt = buildTikTok();
+      if (tt) {
+        anchor.parentNode.insertBefore(tt, anchor.nextSibling);
+        anchor = tt;
+      }
     }
     if (CFG.storiesOnProduct) {
       var after = anchor;
@@ -744,7 +1141,7 @@
       f.href = "https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&display=swap";
       doc.head.appendChild(f);
     }
-    var steps = [initHero, initHeader, initCarousels, initStoriesHome, initProduct, initReveal];
+    var steps = [initHero, initHeader, initCarousels, initStoriesHome, initTikTokHome, initDrawer, initProduct, initReveal];
     steps.forEach(function (fn) {
       try {
         fn();
